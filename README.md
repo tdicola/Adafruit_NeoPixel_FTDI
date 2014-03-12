@@ -19,6 +19,19 @@ Dependencies
 
     -   The library is developed and tested on python 2.7.
 
+Important Note
+--------------
+
+Drivers for the FTDI 232H chip are included in recent linux kernels and Mac OS X Mavericks.  Unfortunately these drivers conflict with the libftdi driver so you must temporarily unload the drivers before running a program that uses libftdi, like this library!
+
+On Mac OS X execute these commands to disable until the next login both the built in driver and any user installed driver:
+
+````
+sudo kextunload -b com.apple.driver.AppleUSBFTDI
+sudo kextunload /System/Library/Extensions/FTDIUSBSerialDriver.kext
+````
+
+
 Timing
 ------
 
