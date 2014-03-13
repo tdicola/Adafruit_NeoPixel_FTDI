@@ -8,16 +8,25 @@ Note this is alpha/beta quality and is not yet built into a formal library.
 Dependencies
 ------------
 
--   [libmpsse](https://code.google.com/p/libmpsse/) is used to send MPSSE commands.
-
-    -   Make sure to compile and install libmpsse with python support.  Note that if you install the libftdi depdency
-        using homebrew on Mac OSX, you might need to add the /usr/local/include/libftdi1 include path to the makefile's           CFLAGS.
+Install these libraries before using the library:
 
 -   [libftdi](http://www.intra2net.com/en/developer/libftdi/) is used by libmpsse to talk to the FTDI device.
 
--   [python](http://www.python.org/)
+    -   With homebrew on Mac OS X execute:
+        ````
+        brew install libftdi
+        ````
 
-    -   The library is developed and tested on python 2.7.
+-   [libmpsse](https://code.google.com/p/libmpsse/) is used to send MPSSE commands.
+
+    -   Follow the [steps here](https://code.google.com/p/libmpsse/wiki/Installation) to install. Make sure to compile and install with python support.  
+    
+        Note that if you install the libftdi depdency using homebrew on Mac OSX, you might need to add the /usr/local/include/libftdi1 include path to the makefile's CFLAGS.
+
+Hardware
+--------
+
+If you're using [the FT232H cable](C232HM-EDHSL-0) make sure to use the 5 volt version (although in my testing the 3.3 volt cable seems to be work--your mileage may vary).  Hook the yellow serial out cable to the NeoPixel signal input and the black ground to NeoPixel power ground.  Don't try to power the NeoPixels from the cable, they pull too much power!
 
 Important Note
 --------------
@@ -30,7 +39,6 @@ On Mac OS X execute these commands to disable until the next login both the buil
 sudo kextunload -b com.apple.driver.AppleUSBFTDI
 sudo kextunload /System/Library/Extensions/FTDIUSBSerialDriver.kext
 ````
-
 
 Timing
 ------
