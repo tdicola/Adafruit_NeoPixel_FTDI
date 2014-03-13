@@ -1,12 +1,10 @@
-Adafruit NeoPixel FTDI
-======================
+# Adafruit NeoPixel FTDI
 
-Python library for interfacing with [Adafruit NeoPixels](http://learn.adafruit.com/adafruit-neopixel-uberguide/overview) (WS2811, WS2812, etc.) using an [FTDI MPSSE](http://www.ftdichip.com/Support/Documents/AppNotes/AN_135_MPSSE_Basics.pdf) device like the [FT232H chip](http://www.ftdichip.com/Products/ICs/FT232H.htm) or [cable](http://www.ftdichip.com/Products/Cables/USBMPSSE.htm).
+Python library for interfacing with [Adafruit NeoPixels](http://learn.adafruit.com/adafruit-neopixel-uberguide/overview) (WS2811, WS2812, etc. addressable RGB LEDs) using an [FTDI MPSSE](http://www.ftdichip.com/Support/Documents/AppNotes/AN_135_MPSSE_Basics.pdf) device like the [FT232H chip](http://www.ftdichip.com/Products/ICs/FT232H.htm) or [cable](http://www.ftdichip.com/Products/Cables/USBMPSSE.htm).
 
-Note this is alpha/beta quality and is not yet built into a formal library.
+<a href="http://imgur.com/zOVrXqp" title="Mobile Upload"><img src="http://i.imgur.com/zOVrXqpl.jpg" title="Hosted by imgur.com" alt="Mobile Upload"/></a>
 
-Dependencies
-------------
+## Dependencies
 
 Install these libraries before using the library:
 
@@ -23,13 +21,25 @@ Install these libraries before using the library:
     
         Note that if you install the libftdi depdency using homebrew on Mac OSX, you might need to add the /usr/local/include/libftdi1 include path to the makefile's CFLAGS.
 
-Hardware
---------
+## Usage
 
-If you're using [the FT232H cable](C232HM-EDHSL-0) make sure to use the 5 volt version (although in my testing the 3.3 volt cable seems to be work--your mileage may vary).  Hook the yellow serial out cable to the NeoPixel signal input and the black ground to NeoPixel power ground.  Don't try to power the NeoPixels from the cable, they pull too much power!
+If you're using [the FT232H cable](C232HM-EDHSL-0) make sure to use the 5 volt version (although in my testing the 3.3 volt cable seems to be work--your mileage may vary).  Hook the yellow serial out wire to the NeoPixel signal input and the black ground wire to NeoPixel power ground.  Don't try to power the NeoPixels from the cable, they pull too much power!
 
-Important Note
---------------
+The library interface is almost exactly the same as the Arduino library interface, but with the following changes:
+
+-   The Adafruit_NeoPixel object constructor takes an optional MPSSE object reference (from the libmpsse library) instead of a pin id.  If this is not set the library will automatically search for the first attached FTDI device with MPSSE support it can find.  The setPin function has been changed to setMPSSE and similarly takes a reference to an MPSSE object.  In practice you don't need to worry about setting this paramter unless you have multiple MPSSE devices and need to choose an explicit one (see the library code for how it creates one).
+
+-   Bit flags in the constructor have been replaced with explicit boolean keyword arguments 'neo_rgb' and 'neo_khz400'.  If not specified the default is a 800khz GRB NeoPixels like in the Arduino library.
+
+-   Added close function to shut down the connection to the MPSSE device.  It's not strictly necessary to call this unless you want to close the connection for some reason.
+
+-   Added setPixelColorRGB function which replaces the overloaded setPixelColor function that takes RGB triples (python doesn't support method overloading).
+
+-   Modified setBrightness to take a float value 0 to 1.0 instead of byte value 0 to 255.  A value of 0 is completely dark pixels and a value of 1.0 is normal brightness.  Note that at low brightness (below 0.25) I've noticed flickering and odd pixel behavior.
+
+See the strandtest example port in strandtest.py for an example of using the library.
+
+## Important Note
 
 Drivers for the FTDI 232H chip are included in recent linux kernels and Mac OS X Mavericks.  Unfortunately these drivers conflict with the libftdi driver so you must temporarily unload the drivers before running a program that uses libftdi, like this library!
 
@@ -40,8 +50,7 @@ sudo kextunload -b com.apple.driver.AppleUSBFTDI
 sudo kextunload /System/Library/Extensions/FTDIUSBSerialDriver.kext
 ````
 
-Timing
-------
+## Timing
 
 NeoPixels are based on the popular WS2811/WS2812 series of addressable RGB LEDs.  Pixel colors are adjusted by sending a signal of pulses on a single control line which is daisy chained across all pixels.  From the [NeoPixels guide](http://learn.adafruit.com/adafruit-neopixel-uberguide/advanced-coding), the timing requirements of the control signal are:
 
@@ -70,3 +79,13 @@ If the FTDI MPSSE device is configured to generate a 6 mhz SPI signal it's possi
     micro-second low pulse.
 
 Note that the SPI clock and input pins are ignored, only the output pin is used to send a signal to the device.
+
+## Future Work
+
+Some things to consider for future updates:
+
+-   Package into a formal python library with setuptools/distribute.
+
+-   Add gamma correction.
+
+-   Consider putting animations and effects into their own part of the library.
