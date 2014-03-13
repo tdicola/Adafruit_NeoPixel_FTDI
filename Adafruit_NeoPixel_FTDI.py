@@ -68,25 +68,6 @@ def _encode_color_rgb(c):
 	"""Encode an RGB tuple into NeoPixel RGB 24 byte SPI bit stream."""
 	return _byte_lookup[c[0]] + _byte_lookup[c[1]] + _byte_lookup[c[2]]
 
-def wheel(pos):
-	"""Convert a value between 0 and 255 to a rainbow color."""
-	if pos < 85:
-		return color(pos * 3, 255 - pos * 3, 0)
-	elif pos < 170:
-		pos -= 85
-		return color(255 - pos * 3, 0, pos * 3)
-	else:
-		pos -= 170
-		return color(0, pos * 3, 255 - pos * 3)
-
-def rainbowCycle(neopixel, wait_ms=20, cycles=5):
-	"""Display a pulsing rainbow animation for the specified NeoPixel instance."""
-	for j in range(256*cycles):
-		for i in range(neopixel.numPixels()):
-			neopixel.setPixelColor(i, wheel(((i * 256 / neopixel.numPixels()) + j) & 255))
-		neopixel.show()
-		time.sleep(wait_ms/1000.0)
-
 
 class Adafruit_NeoPixel(object):
 	
@@ -127,10 +108,9 @@ class Adafruit_NeoPixel(object):
 		# Scale pixels based on brightness and accumulate raw SPI bitstream.
 		rgb = itertools.imap(color_to_rgb, self._pixels)
 		scaled = itertools.imap(lambda c: (int(c[0] * self._brightness),
-										   int(c[1] * self._brightness),
-										   int(c[2] * self._brightness)),
-								rgb)
-		#print "BIMBS", ' '.join(map(lambda c: str(c[0]) + ' ' + str(c[1]) + ' ' + str(c[2]), scaled))
+						   int(c[1] * self._brightness),
+						   int(c[2] * self._brightness)),
+					rgb)
 		encoded = itertools.imap(self._encode, scaled)
 		# Send data to the wire.
 		self._mpsse.Write(str(reduce(operator.add, encoded)))
