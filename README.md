@@ -11,8 +11,15 @@ Install these libraries before using the library:
 -   [libftdi](http://www.intra2net.com/en/developer/libftdi/) is used by libmpsse to talk to the FTDI device.
 
     -   With homebrew on Mac OS X execute:
+        
         ````
         brew install libftdi
+        ````
+        
+        On Ubuntu/Debian execute:
+        
+        ````
+        sudo apt-get install libftdi-dev
         ````
 
 -   [libmpsse](https://code.google.com/p/libmpsse/) is used to send MPSSE commands.
@@ -41,13 +48,20 @@ See the strandtest example port in strandtest.py for an example of using the lib
 
 ## Important Note
 
-Drivers for the FTDI 232H chip are included in recent linux kernels and Mac OS X Mavericks.  Unfortunately these drivers conflict with the libftdi driver so you must temporarily unload the drivers before running a program that uses libftdi, like this library!
+Drivers for the FTDI 232H chip are included in recent Linux kernels and Mac OS X Mavericks.  Unfortunately these drivers conflict with the libftdi driver so you must temporarily unload the drivers before running a program that uses libftdi, like this library!
 
 On Mac OS X execute these commands to disable until the next login both the built in driver and any user installed driver:
 
 ````
 sudo kextunload -b com.apple.driver.AppleUSBFTDI
 sudo kextunload /System/Library/Extensions/FTDIUSBSerialDriver.kext
+````
+
+On Linux execute these commands (from this [application note](http://www.ftdichip.com/Support/Documents/AppNotes/AN_220_FTDI_Drivers_Installation_Guide_for_Linux%20.pdf)) to disable the drivers:
+
+````
+sudo rmmod ftdi_sio
+sudo rmmod usbserial
 ````
 
 ## Timing
