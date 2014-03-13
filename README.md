@@ -47,16 +47,18 @@ NeoPixels are based on the popular WS2811/WS2812 series of addressable RGB LEDs.
 
 -   A pixel one bit pulse is represented by 0.8 micro-seconds high, followed by 0.45 micro-seconds low.
 
+-   When the control signal is held low for 50 micro-seconds or more the pixel update is finished.
+
 -   There is a tolerance of +/-150 nano-seconds for each pulse.
 
-If the FTDI MPSSE device is configured to generate a 6 mhz SPI signal it's possible to generate a control signal that falls within the tolerances define above.  Each pixel bit pulse is subdivided into 1 byte/8 bits of SPI bus data which is easy to align into a series of pixel values (where one 24 bit pixel color turns into 24 bytes of raw SPI data).  The timing of the control signal generated in this method is:
+If the FTDI MPSSE device is configured to generate a 6 mhz SPI signal it's possible to generate a control signal that falls within the tolerances defined above.  Each pixel bit pulse is subdivided into 1 byte/8 bits of SPI bus data which is easy to align into a string of pixel values (where one 24 bit pixel color expands into 24 bytes of raw SPI data).  The timing of this control signal is:
 
--   Each pixel bit is represented by a 1.33 micro-second pulse (1/6hmz * 8 bits).
+-   Each pixel bit is represented by a 1.33 micro-second pulse (1/6mhz * 8 bits).
 
--   A pixel zero bit pulse is represented by the bits 1110 0000, which generates a 0.5 micro-second high and 0.83 
+-   A pixel zero bit pulse is represented by the bits 1110 0000, which generate a 0.5 micro-second high and 0.83 
     micro-second low pulse.
 
--   A pixel one bit pulse is represented by the bits 1111 1000, which generates a 0.83 micro-second high and 0.5 
+-   A pixel one bit pulse is represented by the bits 1111 1000, which generate a 0.83 micro-second high and 0.5 
     micro-second low pulse.
 
 Note that the SPI clock and input pins are ignored, only the output pin is used to send a signal to the device.
