@@ -103,3 +103,5 @@ Some things to consider for future updates:
 -   Add gamma correction.
 
 -   Consider putting animations and effects into their own part of the library.
+
+-   Figure out the limits of how many pixels can be addressed.  At some point the latecy of USB messages might fall outside the 50 micro-second period for pixels to turn on, but it's unclear when this will happen (perhaps depends on libftdi's default 4096 byte write buffer?).  So far powering ~90 pixels seems to work fine.
